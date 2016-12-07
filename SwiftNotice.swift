@@ -31,6 +31,12 @@ extension UIResponder {
     func noticeInfo(_ text: String, autoClear: Bool = false, autoClearTime: Int = 3) {
         SwiftNotice.showNoticeWithText(NoticeType.info, text: text, autoClear: autoClear, autoClearTime: autoClearTime)
     }
+    func noticeStar(_ text: String, autoClear: Bool = false, autoClearTime: Int = 3) {
+        SwiftNotice.showNoticeWithText(NoticeType.star, text: text, autoClear: autoClear, autoClearTime: autoClearTime)
+    }
+    func noticeDeletion(_ text: String, autoClear: Bool = false, autoClearTime: Int = 3) {
+        SwiftNotice.showNoticeWithText(NoticeType.deletion, text: text, autoClear: autoClear, autoClearTime: autoClearTime)
+    }
     
     // old apis
     func successNotice(_ text: String, autoClear: Bool = true) {
@@ -41,6 +47,12 @@ extension UIResponder {
     }
     func infoNotice(_ text: String, autoClear: Bool = true) {
         SwiftNotice.showNoticeWithText(NoticeType.info, text: text, autoClear: autoClear, autoClearTime: 3)
+    }
+    func starNotice(_ text: String, autoClear: Bool = true) {
+        SwiftNotice.showNoticeWithText(NoticeType.star, text: text, autoClear: autoClear, autoClearTime: 3)
+    }
+    func deletionNotice(_ text: String, autoClear: Bool = true) {
+        SwiftNotice.showNoticeWithText(NoticeType.deletion, text: text, autoClear: autoClear, autoClearTime: 3)
     }
     func notice(_ text: String, type: NoticeType, autoClear: Bool, autoClearTime: Int = 3) {
         SwiftNotice.showNoticeWithText(type, text: text, autoClear: autoClear, autoClearTime: autoClearTime)
@@ -60,6 +72,8 @@ enum NoticeType{
     case success
     case error
     case info
+    case star
+    case deletion
 }
 
 class SwiftNotice: NSObject {
@@ -247,6 +261,10 @@ class SwiftNotice: NSObject {
             image = SwiftNoticeSDK.imageOfCross
         case .info:
             image = SwiftNoticeSDK.imageOfInfo
+        case .star:
+            image = SwiftNoticeSDK.imageOfStar
+        case .deletion:
+            image = SwiftNoticeSDK.imageOfDeletion
         }
         let checkmarkView = UIImageView(image: image)
         checkmarkView.frame = CGRect(x: 27, y: 15, width: 36, height: 36)
@@ -327,23 +345,29 @@ class SwiftNoticeSDK {
         static var imageOfCheckmark: UIImage?
         static var imageOfCross: UIImage?
         static var imageOfInfo: UIImage?
+        static var imageOfStar: UIImage?
+        static var imageOfDeletion: UIImage?
     }
     class func draw(_ type: NoticeType) {
         let checkmarkShapePath = UIBezierPath()
         
         // draw circle
-        checkmarkShapePath.move(to: CGPoint(x: 36, y: 18))
-        checkmarkShapePath.addArc(withCenter: CGPoint(x: 18, y: 18), radius: 17.5, startAngle: 0, endAngle: CGFloat(M_PI*2), clockwise: true)
-        checkmarkShapePath.close()
+        let drawCircle = {
+            checkmarkShapePath.move(to: CGPoint(x: 36, y: 18))
+            checkmarkShapePath.addArc(withCenter: CGPoint(x: 18, y: 18), radius: 17.5, startAngle: 0, endAngle: CGFloat(M_PI*2), clockwise: true)
+            checkmarkShapePath.close()
+        }
         
         switch type {
         case .success: // draw checkmark
+            drawCircle()
             checkmarkShapePath.move(to: CGPoint(x: 10, y: 18))
             checkmarkShapePath.addLine(to: CGPoint(x: 16, y: 24))
             checkmarkShapePath.addLine(to: CGPoint(x: 27, y: 13))
             checkmarkShapePath.move(to: CGPoint(x: 10, y: 18))
             checkmarkShapePath.close()
         case .error: // draw X
+            drawCircle()
             checkmarkShapePath.move(to: CGPoint(x: 10, y: 10))
             checkmarkShapePath.addLine(to: CGPoint(x: 26, y: 26))
             checkmarkShapePath.move(to: CGPoint(x: 10, y: 26))
@@ -351,6 +375,7 @@ class SwiftNoticeSDK {
             checkmarkShapePath.move(to: CGPoint(x: 10, y: 10))
             checkmarkShapePath.close()
         case .info:
+            drawCircle()
             checkmarkShapePath.move(to: CGPoint(x: 18, y: 6))
             checkmarkShapePath.addLine(to: CGPoint(x: 18, y: 22))
             checkmarkShapePath.move(to: CGPoint(x: 18, y: 6))
@@ -366,7 +391,43 @@ class SwiftNoticeSDK {
             
             UIColor.white.setFill()
             checkmarkShapePath.fill()
+        case .star:
+            checkmarkShapePath.move(to: CGPoint(x: 11.31, y: 10.06))
+            checkmarkShapePath.addLine(to: CGPoint(x: 16, y: 0.56))
+            checkmarkShapePath.addLine(to: CGPoint(x: 20.69, y: 10.06))
+            checkmarkShapePath.addLine(to: CGPoint(x: 31.18, y: 11.59))
+            checkmarkShapePath.addLine(to: CGPoint(x: 23.59, y: 18.99))
+            checkmarkShapePath.addLine(to: CGPoint(x: 25.38, y: 29.43))
+            checkmarkShapePath.addLine(to: CGPoint(x: 16, y: 24.5))
+            checkmarkShapePath.addLine(to: CGPoint(x: 16, y: 24.5))
+            checkmarkShapePath.addLine(to: CGPoint(x: 6.62, y: 29.43))
+            checkmarkShapePath.addLine(to: CGPoint(x: 8.41, y: 18.99))
+            checkmarkShapePath.addLine(to: CGPoint(x: 0.82, y: 11.59))
+            checkmarkShapePath.addLine(to: CGPoint(x: 8.49, y: 10.47))
+            checkmarkShapePath.close()
+            checkmarkShapePath.lineWidth = 1
+            checkmarkShapePath.lineCapStyle = .round
+            checkmarkShapePath.lineJoinStyle = .round
+        case .deletion:
+            checkmarkShapePath.move(to: CGPoint(x: 8.5, y: 0.5))
+            checkmarkShapePath.addLine(to: CGPoint(x: 18.5, y: 0.5))
+            checkmarkShapePath.move(to: CGPoint(x: 0.5, y: 4.5))
+            checkmarkShapePath.addLine(to: CGPoint(x: 26.5, y: 4.5))
+            
+            checkmarkShapePath.move(to: CGPoint(x: 4.24, y: 7.73))
+            checkmarkShapePath.addLine(to: CGPoint(x: 4.24, y: 27.16))
+            checkmarkShapePath.addLine(to: CGPoint(x: 22.65, y: 27.16))
+            checkmarkShapePath.addLine(to: CGPoint(x: 22.65, y: 7.73))
+            checkmarkShapePath.move(to: CGPoint(x: 10, y: 8))
+            checkmarkShapePath.addLine(to: CGPoint(x: 10, y: 22.57))
+            checkmarkShapePath.move(to: CGPoint(x: 17, y: 8))
+            checkmarkShapePath.addLine(to: CGPoint(x: 17, y: 22.57))
+            checkmarkShapePath.close()
+            checkmarkShapePath.lineWidth = 1
+            checkmarkShapePath.lineCapStyle = .round
+            checkmarkShapePath.lineJoinStyle = .round
         }
+        
         
         UIColor.white.setStroke()
         checkmarkShapePath.stroke()
@@ -406,5 +467,29 @@ class SwiftNoticeSDK {
         Cache.imageOfInfo = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return Cache.imageOfInfo!
+    }
+    class var imageOfStar: UIImage {
+        if (Cache.imageOfStar != nil) {
+            return Cache.imageOfStar!
+        }
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
+        
+        SwiftNoticeSDK.draw(NoticeType.star)
+        
+        Cache.imageOfStar = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return Cache.imageOfStar!
+    }
+    class var imageOfDeletion: UIImage {
+        if (Cache.imageOfDeletion != nil) {
+            return Cache.imageOfDeletion!
+        }
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
+        
+        SwiftNoticeSDK.draw(NoticeType.deletion)
+        
+        Cache.imageOfDeletion = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return Cache.imageOfDeletion!
     }
 }

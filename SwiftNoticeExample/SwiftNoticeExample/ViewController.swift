@@ -14,10 +14,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-
     @IBAction func topNotice(_ sender: AnyObject) {
         UIApplication.shared.setStatusBarHidden(false, with: .slide)
         self.noticeTop("OK!")
@@ -46,6 +42,12 @@ class ViewController: UIViewController {
     @IBAction func text(_ sender: AnyObject) {
 //        SwiftNotice.showText("kiss me baby")
         self.noticeOnlyText("Only Text Only Text Only Text Only \nText Only Text Only Text Only\n Text Only Text Only Text ")
+    }
+    @IBAction func noticeStar(_ sender: Any) {
+        self.starNotice("collected")
+    }
+    @IBAction func noticeDeletion(_ sender: Any) {
+        self.deletionNotice("deleted")
     }
     @IBAction func clear(_ sender: AnyObject) {
         self.clearAllNotice()
